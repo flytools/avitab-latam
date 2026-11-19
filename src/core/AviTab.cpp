@@ -303,6 +303,20 @@ void AviTab::commandShowApp(const std::string &appName) {
         showApp(AppId::MANUALS);
     } else if (appName == "notes") {
         showApp(AppId::NOTES);
+    } else if (appName == "latam" || appName == "latam-dashboard") {
+        showApp(AppId::LATAM_DASHBOARD);
+    } else if (appName == "latam-brief") {
+        showApp(AppId::LATAM_BRIEF);
+    } else if (appName == "latam-weather") {
+        showApp(AppId::LATAM_WEATHER);
+    } else if (appName == "latam-docs") {
+        showApp(AppId::LATAM_DOCS);
+    } else if (appName == "latam-mras") {
+        showApp(AppId::LATAM_MRAS);
+    } else if (appName == "latam-radar") {
+        showApp(AppId::LATAM_RADAR);
+    } else if (appName == "latam-messages") {
+        showApp(AppId::LATAM_MESSAGES);
     } else if (appName == "providers") {
         showApp(AppId::PROVIDERS);
     } else if (appName == "about") {

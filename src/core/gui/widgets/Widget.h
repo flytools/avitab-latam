@@ -63,6 +63,8 @@ public:
     int getX();
     int getY();
     void setVisible(bool visible);
+    // Puts the widget behind its siblings, at 0,0, and out of the parent's layout (a background image)
+    void sendToBackground();
     bool isVisible();
     void invalidate();
 

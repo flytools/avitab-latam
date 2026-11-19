@@ -37,6 +37,20 @@ HeaderApp::HeaderApp(FuncsPtr appFuncs):
     container->setPosition(0, 0);
     container->setDimensions(container->getWidth(), 30);
 
+    // the top bar: a darker strip with a thin line below it
+    static lv_style_t barStyle;
+    lv_style_copy(&barStyle, lv_obj_get_style(container->obj()));
+    barStyle.body.main_color = lv_color_hex(0x0B0D11);
+    barStyle.body.grad_color = lv_color_hex(0x0B0D11);
+    barStyle.body.radius = 0;
+    barStyle.body.opa = LV_OPA_COVER;
+    barStyle.body.shadow.width = 0;
+    barStyle.body.border.color = lv_color_hex(0x2A303C);
+    barStyle.body.border.width = 1;
+    barStyle.body.border.part = LV_BORDER_BOTTOM;
+    barStyle.body.border.opa = LV_OPA_COVER;
+    lv_obj_set_style(container->obj(), &barStyle);
+
     clockLabel = std::make_shared<Label>(container, "");
     clockLabel->setClickable(true);
     clockLabel->setClickHandler([this] (int x, int y, bool pr, bool rel) { onClockClick(x, y, pr, rel); });

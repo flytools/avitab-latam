@@ -130,6 +130,12 @@ int Widget::getHeight() {
     return lv_obj_get_height(obj());
 }
 
+void Widget::sendToBackground() {
+    lv_obj_set_protect(obj(), LV_PROTECT_POS);      // the container layout leaves it where it is
+    lv_obj_set_pos(obj(), 0, 0);
+    lv_obj_move_background(obj());
+}
+
 void Widget::setVisible(bool visible) {
     lv_obj_set_hidden(obj(), !visible);
 }

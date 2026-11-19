@@ -16,6 +16,8 @@ target_sources(avitab_core_lib PRIVATE
     DocumentsApp.h
     HeaderApp.cpp
     HeaderApp.h
+    LatamApp.cpp
+    LatamApp.h
     MapApp.cpp
     MapApp.h
     NotesApp.cpp

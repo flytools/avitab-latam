@@ -26,8 +26,12 @@ namespace avitab {
 class Keyboard: public Widget {
 public:
     using Callback = std::function<void()>;
+    // Called for every typing key instead of editing the target text area. "special" keys are named
+    // "Backspace", "Enter", "ArrowLeft" and "ArrowRight"; any other key is the text of the key itself.
+    using KeyCallback = std::function<void(const std::string &key, bool special)>;
 
     Keyboard(WidgetPtr parent, std::shared_ptr<TextArea> target);
+    void setOnKey(KeyCallback cb);
     void setTarget(std::shared_ptr<TextArea> target);
     void setOnCancel(Callback cb);
     void setOnOk(Callback cb);
@@ -39,6 +43,9 @@ private:
     std::shared_ptr<TextArea> targetText;
     Callback onCancel;
     Callback onOk;
+    KeyCallback onKey;
+
+    bool forwardKey(lv_obj_t *keys);
 };
 
 } /* namespace avitab */

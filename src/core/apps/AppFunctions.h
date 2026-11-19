@@ -39,6 +39,13 @@ enum class AppId {
     MAPS,
     MANUALS,
     NOTES,
+    LATAM_DASHBOARD,
+    LATAM_BRIEF,
+    LATAM_WEATHER,
+    LATAM_DOCS,
+    LATAM_MRAS,
+    LATAM_RADAR,
+    LATAM_MESSAGES,
     PROVIDERS,
     ABOUT,
 };

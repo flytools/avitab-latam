@@ -114,7 +114,7 @@ void Settings::init() {
                                  { "show_calibration_msg_on_load", true },
                                  { "show_overlays_in_airport_app", false },
                                  { "show_overlays_in_charts_app", false },
-                                 { "show_fps", true } } },
+                                 { "show_fps", false } } },
                   { "overlay", { { "my_aircraft", true } } } };
 }
 
@@ -210,7 +210,7 @@ void ConfigBase::onUpdate(int id) {
 
 void GeneralConfig::unpack() {
     version = json["prefs_version"];
-    showFPS = json.value("show_fps", true);
+    showFPS = json.value("show_fps", false);   // off by default: a cleaner top bar
     clockMode = json.value("clock_mode", 0);
     showAirportOverlays = json.value("show_overlays_in_airport_app", true);
     showChartOverlays = json.value("show_overlays_in_charts_app", true);

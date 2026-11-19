@@ -25,6 +25,117 @@
 namespace avitab {
 
 namespace {
+
+// The look of AviTab: the LatamAcars palette (dark surfaces, blue accent), flat and rounded widgets.
+const uint32_t BG = 0x0F1115, BAR = 0x0B0D11, SURFACE = 0x171A21, FIELD = 0x11141A, RAISED = 0x202533, BORDER = 0x2A303C;
+const uint32_t ACCENT = 0x4C7DFF, PRIMARY = 0x22098C, TEXT = 0xEDEFF3, MUTED = 0x8A93A3;
+
+// The theme reuses LVGL's own global styles for some widgets (lv_style_transp...): changing them would repaint every
+// transparent container, so they are left alone.
+bool isShared(const lv_style_t *s) {
+    return s == &lv_style_scr || s == &lv_style_transp || s == &lv_style_transp_fit || s == &lv_style_transp_tight ||
+           s == &lv_style_plain || s == &lv_style_plain_color || s == &lv_style_pretty || s == &lv_style_pretty_color ||
+           s == &lv_style_btn_rel || s == &lv_style_btn_pr || s == &lv_style_btn_tgl_rel || s == &lv_style_btn_tgl_pr || s == &lv_style_btn_ina;
+}
+
+void flat(lv_style_t *s, uint32_t color, lv_coord_t radius) {
+    if (!s || isShared(s)) return;
+    s->body.main_color = lv_color_hex(color);
+    s->body.grad_color = lv_color_hex(color);
+    s->body.radius = radius;
+    s->body.opa = LV_OPA_COVER;
+    s->body.shadow.width = 0;
+    s->body.border.width = 0;
+}
+
+void outline(lv_style_t *s, uint32_t color, lv_coord_t width) {
+    if (!s || isShared(s)) return;
+    s->body.border.color = lv_color_hex(color);
+    s->body.border.width = width;
+    s->body.border.part = LV_BORDER_FULL;
+    s->body.border.opa = LV_OPA_COVER;
+}
+
+void ink(lv_style_t *s, uint32_t color) {
+    if (s && !isShared(s)) s->text.color = lv_color_hex(color);
+}
+
+void applyModernTheme(lv_theme_t *th) {
+    // backgrounds and containers
+    flat(th->style.scr, BG, 0);
+    flat(th->style.bg, BG, 0);
+    ink(th->style.bg, TEXT);
+    flat(th->style.panel, SURFACE, 12);
+    outline(th->style.panel, BORDER, 1);
+    flat(th->style.cont, BG, 0);
+
+    // text
+    ink(th->style.label.prim, TEXT);
+    ink(th->style.label.sec, MUTED);
+    ink(th->style.label.hint, MUTED);
+
+    // buttons
+    flat(th->style.btn.rel, RAISED, 10);        ink(th->style.btn.rel, TEXT);
+    flat(th->style.btn.pr, ACCENT, 10);         ink(th->style.btn.pr, 0xFFFFFF);
+    flat(th->style.btn.tgl_rel, PRIMARY, 10);   ink(th->style.btn.tgl_rel, 0xFFFFFF);
+    flat(th->style.btn.tgl_pr, ACCENT, 10);     ink(th->style.btn.tgl_pr, 0xFFFFFF);
+    flat(th->style.btn.ina, SURFACE, 10);       ink(th->style.btn.ina, MUTED);
+
+    // windows (every app is one)
+    flat(th->style.win.bg, BG, 0);
+    flat(th->style.win.header, BAR, 0);
+    if (!isShared(th->style.win.header)) {
+        th->style.win.header->body.border.color = lv_color_hex(BORDER);
+        th->style.win.header->body.border.width = 1;
+        th->style.win.header->body.border.part = LV_BORDER_BOTTOM;
+    }
+    ink(th->style.win.header, TEXT);
+    flat(th->style.win.btn.pr, ACCENT, 8);
+
+    // sliders, bars, switches, check boxes
+    flat(th->style.slider.bg, BORDER, LV_RADIUS_CIRCLE);
+    flat(th->style.slider.indic, ACCENT, LV_RADIUS_CIRCLE);
+    flat(th->style.slider.knob, 0xFFFFFF, LV_RADIUS_CIRCLE);
+    flat(th->style.bar.bg, BORDER, LV_RADIUS_CIRCLE);
+    flat(th->style.bar.indic, ACCENT, LV_RADIUS_CIRCLE);
+    flat(th->style.sw.bg, BORDER, LV_RADIUS_CIRCLE);
+    flat(th->style.sw.indic, ACCENT, LV_RADIUS_CIRCLE);
+    flat(th->style.sw.knob_off, 0xFFFFFF, LV_RADIUS_CIRCLE);
+    flat(th->style.sw.knob_on, 0xFFFFFF, LV_RADIUS_CIRCLE);
+    ink(th->style.cb.bg, TEXT);
+    flat(th->style.cb.box.rel, RAISED, 6);      outline(th->style.cb.box.rel, BORDER, 1);
+    flat(th->style.cb.box.pr, ACCENT, 6);
+    flat(th->style.cb.box.tgl_rel, ACCENT, 6);
+    flat(th->style.cb.box.tgl_pr, ACCENT, 6);
+
+    // text fields and the on-screen keyboard
+    flat(th->style.ta.area, FIELD, 10);         outline(th->style.ta.area, BORDER, 1);        ink(th->style.ta.area, TEXT);
+    flat(th->style.ta.oneline, FIELD, 10);      outline(th->style.ta.oneline, BORDER, 1);     ink(th->style.ta.oneline, TEXT);
+    if (th->style.ta.cursor) {
+        th->style.ta.cursor->body.main_color = lv_color_hex(ACCENT);
+        th->style.ta.cursor->body.grad_color = lv_color_hex(ACCENT);
+    }
+    flat(th->style.kb.btn.rel, RAISED, 8);      ink(th->style.kb.btn.rel, TEXT);
+    flat(th->style.kb.btn.pr, ACCENT, 8);       ink(th->style.kb.btn.pr, 0xFFFFFF);
+    flat(th->style.kb.btn.tgl_rel, PRIMARY, 8); ink(th->style.kb.btn.tgl_rel, 0xFFFFFF);
+    flat(th->style.kb.btn.tgl_pr, ACCENT, 8);   ink(th->style.kb.btn.tgl_pr, 0xFFFFFF);
+    flat(th->style.kb.btn.ina, SURFACE, 8);     ink(th->style.kb.btn.ina, MUTED);
+
+    // lists and drop-downs
+    flat(th->style.list.bg, SURFACE, 12);
+    flat(th->style.list.btn.rel, SURFACE, 0);   ink(th->style.list.btn.rel, TEXT);
+    if (!isShared(th->style.list.btn.rel)) {
+        th->style.list.btn.rel->body.border.color = lv_color_hex(BORDER);
+        th->style.list.btn.rel->body.border.width = 1;
+        th->style.list.btn.rel->body.border.part = LV_BORDER_BOTTOM;
+    }
+    flat(th->style.list.btn.pr, RAISED, 0);     ink(th->style.list.btn.pr, TEXT);
+    flat(th->style.list.btn.tgl_rel, PRIMARY, 0);
+    flat(th->style.list.btn.tgl_pr, ACCENT, 0);
+    flat(th->style.ddlist.bg, RAISED, 10);      ink(th->style.ddlist.bg, TEXT);
+    flat(th->style.ddlist.sel, ACCENT, 6);
+}
+
 lv_disp_buf_t lvDispBuf;
 lv_disp_drv_t lvDriver;
 lv_indev_drv_t inputDriver;
@@ -55,6 +166,7 @@ LVGLToolkit::LVGLToolkit(std::shared_ptr<UiDriverBase> drv):
 
         lv_theme_t *theme = lv_theme_night_init(210, LV_FONT_DEFAULT);
         lv_theme_set_current(theme);
+        applyModernTheme(theme);
         lvglIsInitialized = true;
     }
 
@@ -209,7 +321,7 @@ lv_obj_t *LVGLToolkit::searchActiveKeyboard(lv_obj_t* obj) {
 
         lv_obj_type_t type{};
         lv_obj_get_type(curChild, &type);
-        if (strcmp(type.type[0], "lv_kb") == 0) {
+        if (strcmp(type.type[0], "lv_kb") == 0 && !lv_obj_get_hidden(curChild)) {      // a hidden keyboard does not take the keys
             if (lv_area_is_in(&curChild->coords, &screen->coords)) {
                 return curChild;
             }

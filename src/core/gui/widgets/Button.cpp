@@ -45,8 +45,16 @@ Button::Button(WidgetPtr parent, img::Image &&icon, const std::string& caption, 
     lv_style_copy(&styleWhenReleased, lv_btn_get_style(button, LV_BTN_STYLE_REL));
     lv_style_copy(&styleWhenPressed, lv_btn_get_style(button, LV_BTN_STYLE_PR));
 
-    styleWhenPressed.body.opa = 0;
+    // a launcher tile: no frame, and a soft rounded highlight while it is pressed
     styleWhenReleased.body.opa = 0;
+    styleWhenReleased.body.border.width = 0;
+    styleWhenReleased.body.shadow.width = 0;
+    styleWhenPressed.body.opa = LV_OPA_30;
+    styleWhenPressed.body.radius = 18;
+    styleWhenPressed.body.main_color = lv_color_hex(0x4C7DFF);
+    styleWhenPressed.body.grad_color = lv_color_hex(0x4C7DFF);
+    styleWhenPressed.body.border.width = 0;
+    styleWhenPressed.body.shadow.width = 0;
 
     lv_btn_set_style(button, LV_BTN_STYLE_PR, &styleWhenPressed);
     lv_btn_set_style(button, LV_BTN_STYLE_REL, &styleWhenReleased);
@@ -57,6 +65,17 @@ Button::Button(WidgetPtr parent, img::Image &&icon, const std::string& caption, 
 
     lv_obj_t *label = lv_label_create(button, nullptr);
     lv_label_set_text(label, caption.c_str());
+
+    // launcher captions: a smaller font than the default
+    static lv_style_t captionStyle;
+    static bool captionReady = false;
+    if (!captionReady) {
+        lv_style_copy(&captionStyle, &lv_style_plain);
+        captionStyle.text.font = &lv_font_roboto_16;
+        captionStyle.text.color = lv_color_hex(0xEDEFF3);
+        captionReady = true;
+    }
+    lv_obj_set_style(label, &captionStyle);
 
     if (width >= 0) {
         lv_cont_set_fit2(button, LV_FIT_NONE, LV_FIT_TIGHT);

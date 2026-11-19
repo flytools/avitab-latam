@@ -23,6 +23,9 @@
 #include "App.h"
 #include "gui/widgets/Button.h"
 #include "gui/widgets/Label.h"
+#include "gui/widgets/PixMap.h"
+#include "gui/widgets/Container.h"
+#include "image/Image.h"
 
 namespace avitab {
 
@@ -48,6 +51,17 @@ private:
     std::vector<Entry> entries;
 
     std::shared_ptr<App> activeApp;
+
+    // The home screen background (a picture behind the icons), fitted to the screen.
+    std::shared_ptr<PixMap> background;
+    img::Image backgroundImage;
+    int bgWidth = 0, bgHeight = 0;
+    void updateBackground(int width, int height);
+
+    // The icons are placed by hand: 5 per row, each row centred, side margins, and a line between the LatamAcars apps and the others.
+    std::shared_ptr<Container> divider;
+    int layoutWidth = 0;
+    void updateLayout(int width);
 
     template<typename T>
     void addEntry(const std::string &name, const std::filesystem::path &icon, AppId id);

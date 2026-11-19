@@ -44,6 +44,9 @@ Keyboard::Keyboard(WidgetPtr parent, std::shared_ptr<TextArea> target):
                 lv_kb_set_ta(ref, us->targetText->obj());
             }
         } else if (ev == LV_EVENT_VALUE_CHANGED) {
+            if (us && us->forwardKey(ref)) {
+                return;
+            }
             lv_kb_def_event_cb(ref, ev);
         }
     });
@@ -53,6 +56,43 @@ Keyboard::Keyboard(WidgetPtr parent, std::shared_ptr<TextArea> target):
 
 void Keyboard::setTarget(std::shared_ptr<TextArea> target) {
     lv_kb_set_ta(obj(), target->obj());
+}
+
+void Keyboard::setOnKey(KeyCallback cb) {
+    onKey = cb;
+}
+
+// With a key callback, typing keys go to the callback and the text area is left alone. The keys that change the
+// layout (abc, ABC, 1#) and the OK / close keys still go through the default handling.
+bool Keyboard::forwardKey(lv_obj_t *keys) {
+    if (!onKey) {
+        return false;
+    }
+    if (lv_btnm_get_active_btn(keys) == LV_BTNM_BTN_NONE) {
+        return false;
+    }
+    const char *txt = lv_btnm_get_active_btn_text(keys);
+    if (!txt) {
+        return false;
+    }
+
+    std::string key = txt;
+    if (key == "abc" || key == "ABC" || key == "1#" || key == LV_SYMBOL_OK || key == LV_SYMBOL_CLOSE) {
+        return false;
+    }
+
+    if (key == LV_SYMBOL_BACKSPACE) {
+        onKey("Backspace", true);
+    } else if (key == LV_SYMBOL_NEW_LINE) {
+        onKey("Enter", true);
+    } else if (key == LV_SYMBOL_LEFT) {
+        onKey("ArrowLeft", true);
+    } else if (key == LV_SYMBOL_RIGHT) {
+        onKey("ArrowRight", true);
+    } else {
+        onKey(key, false);
+    }
+    return true;
 }
 
 void Keyboard::setOnCancel(Callback cb) {
