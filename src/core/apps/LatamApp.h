@@ -137,6 +137,26 @@ public:
     LatamMessagesApp(FuncsPtr appFuncs): LatamApp(appFuncs, "messages", "MESSAGES") {}
 };
 
+class LatamLogbookApp: public LatamApp {
+public:
+    LatamLogbookApp(FuncsPtr appFuncs): LatamApp(appFuncs, "logbook", "LOGBOOK") {}
+};
+
+class LatamAisApp: public LatamApp {
+public:
+    LatamAisApp(FuncsPtr appFuncs): LatamApp(appFuncs, "ais", "AIS") {}
+};
+
+class LatamOptApp: public LatamApp {
+public:
+    LatamOptApp(FuncsPtr appFuncs): LatamApp(appFuncs, "opt", "OPTIMIZATION") {}
+};
+
+class LatamSettingsApp: public LatamApp {
+public:
+    LatamSettingsApp(FuncsPtr appFuncs): LatamApp(appFuncs, "settings", "SETTINGS") {}
+};
+
 // Navigraph Charts (https://charts.navigraph.com/): LatamAcars opens the site in its off-screen browser instead of an EFB page.
 class LatamNavigraphApp: public LatamApp {
 public:

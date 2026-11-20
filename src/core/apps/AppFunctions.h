@@ -47,6 +47,10 @@ enum class AppId {
     LATAM_RADAR,
     LATAM_MESSAGES,
     LATAM_NAVIGRAPH,
+    LATAM_LOGBOOK,
+    LATAM_AIS,
+    LATAM_OPT,
+    LATAM_SETTINGS,
     PROVIDERS,
     ABOUT,
 };

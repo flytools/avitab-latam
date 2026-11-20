@@ -319,6 +319,14 @@ void AviTab::commandShowApp(const std::string &appName) {
         showApp(AppId::LATAM_MESSAGES);
     } else if (appName == "latam-navigraph") {
         showApp(AppId::LATAM_NAVIGRAPH);
+    } else if (appName == "latam-logbook") {
+        showApp(AppId::LATAM_LOGBOOK);
+    } else if (appName == "latam-ais") {
+        showApp(AppId::LATAM_AIS);
+    } else if (appName == "latam-opt") {
+        showApp(AppId::LATAM_OPT);
+    } else if (appName == "latam-settings") {
+        showApp(AppId::LATAM_SETTINGS);
     } else if (appName == "providers") {
         showApp(AppId::PROVIDERS);
     } else if (appName == "about") {

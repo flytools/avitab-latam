@@ -41,18 +41,23 @@ AppLauncher::AppLauncher(FuncsPtr appFuncs):
     // the LatamAcars apps come first
     addEntry<LatamDashboardApp>("Flight", root / "latam_dashboard.png", AppId::LATAM_DASHBOARD);
     addEntry<LatamBriefApp>("Brief", root / "latam_brief.png", AppId::LATAM_BRIEF);
+    addEntry<LatamRadarApp>("Radar", root / "latam_radar.png", AppId::LATAM_RADAR);
+    addEntry<LatamLogbookApp>("Logbook", root / "latam_logbook.png", AppId::LATAM_LOGBOOK);
+    addEntry<LatamAisApp>("AIS", root / "latam_ais.png", AppId::LATAM_AIS);
+    addEntry<LatamOptApp>("Optimization", root / "latam_opt.png", AppId::LATAM_OPT);
     addEntry<LatamWeatherApp>("Weather", root / "latam_weather.png", AppId::LATAM_WEATHER);
     addEntry<LatamDocsApp>("Docs", root / "latam_docs.png", AppId::LATAM_DOCS);
     addEntry<LatamMrasApp>("MRAs", root / "latam_mras.png", AppId::LATAM_MRAS);
-    addEntry<LatamRadarApp>("Radar", root / "latam_radar.png", AppId::LATAM_RADAR);
-    addEntry<LatamMessagesApp>("Messages", root / "latam_messages.png", AppId::LATAM_MESSAGES);
     addEntry<LatamNavigraphApp>("Navigraph", root / "latam_navigraph.png", AppId::LATAM_NAVIGRAPH);
+    addEntry<LatamMessagesApp>("Messages", root / "latam_messages.png", AppId::LATAM_MESSAGES);
+    addEntry<LatamSettingsApp>("Settings", root / "latam_settings.png", AppId::LATAM_SETTINGS);
 
     addEntry<ChartsApp>("Charts", root / "folder.png", AppId::CHARTS);
     addEntry<AirportApp>("Airports", root / "if_xmag_3617.png", AppId::AIRPORTS);
     addEntry<RouteApp>("Routes", root / "if_applications-internet_118835.png", AppId::ROUTES);
     addEntry<MapApp>("Maps", root / "if_starthere_18227.png", AppId::MAPS);
     addEntry<PlaneManualApp>("Aircraft", root / "if_ilustracoes_04-11_1519786.png", AppId::MANUALS);
+    addEntry<About>("About", root / "if_Help_1493288.png", AppId::ABOUT);
 
     if (api().getChartService()->getNavigraph()->isSupported() || api().getChartService()->getChartFox()->isSupported()) {
         addEntry<ProvidersApp>("Providers", root / "if_Airport_22906.png", AppId::PROVIDERS);
@@ -73,6 +78,10 @@ bool isLatamApp(AppId id) {
     case AppId::LATAM_RADAR:
     case AppId::LATAM_MESSAGES:
     case AppId::LATAM_NAVIGRAPH:
+    case AppId::LATAM_LOGBOOK:
+    case AppId::LATAM_AIS:
+    case AppId::LATAM_OPT:
+    case AppId::LATAM_SETTINGS:
         return true;
     default:
         return false;
@@ -80,7 +89,7 @@ bool isLatamApp(AppId id) {
 }
 }
 
-// Five icons per row with room on both sides; a row with fewer icons is centred as a whole.
+// Six icons per row, close together with room on both sides; a row with fewer icons is centred as a whole.
 // The LatamAcars apps come first, then a thin line, then the AviTab apps.
 void AppLauncher::updateLayout(int width) {
     if (width <= 0 || width == layoutWidth) {
@@ -88,7 +97,7 @@ void AppLauncher::updateLayout(int width) {
     }
     layoutWidth = width;
 
-    const int columns = 5;
+    const int columns = 6;
     const int tileWidth = 104;
     const int top = 18, rowGap = 14, groupGap = 18;
 
@@ -98,7 +107,7 @@ void AppLauncher::updateLayout(int width) {
         usable = std::min(width, columns * tileWidth);
         margin = (width - usable) / 2;
     }
-    const int cellWidth = usable / columns;
+    const int cellWidth = std::min(usable / columns, tileWidth + 6);    // close together, however wide the tablet is
 
     int y = top;
     auto placeGroup = [&] (bool latam) {
@@ -137,8 +146,8 @@ void AppLauncher::updateLayout(int width) {
         lv_obj_set_style(divider->obj(), &dividerStyle);
     }
     y += 4;
-    divider->setDimensions(usable, 2);
-    divider->setPosition(margin, y);
+    divider->setDimensions(std::min(usable, columns * cellWidth), 2);
+    divider->setPosition((width - std::min(usable, columns * cellWidth)) / 2, y);
     y += 2 + groupGap;
 
     placeGroup(false);
