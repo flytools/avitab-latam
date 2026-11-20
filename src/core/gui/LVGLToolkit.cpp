@@ -281,6 +281,9 @@ void LVGLToolkit::handleKeyboard() {
         if (keyboard) {
             auto ta = lv_kb_get_ta(keyboard);
             auto keyb = (Keyboard *) lv_obj_get_user_data(keyboard);
+            if (keyb && keyb->forwardPhysicalKey(c)) {
+                continue;       // the keyboard passes keys on (LatamAcars apps): the text area is not edited
+            }
             if (!ta) {
                 continue;
             }

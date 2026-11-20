@@ -137,4 +137,10 @@ public:
     LatamMessagesApp(FuncsPtr appFuncs): LatamApp(appFuncs, "messages", "MESSAGES") {}
 };
 
+// Navigraph Charts (https://charts.navigraph.com/): LatamAcars opens the site in its off-screen browser instead of an EFB page.
+class LatamNavigraphApp: public LatamApp {
+public:
+    LatamNavigraphApp(FuncsPtr appFuncs): LatamApp(appFuncs, "navigraph", "NAVIGRAPH") {}
+};
+
 } /* namespace avitab */

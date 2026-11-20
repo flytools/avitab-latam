@@ -46,19 +46,17 @@ AppLauncher::AppLauncher(FuncsPtr appFuncs):
     addEntry<LatamMrasApp>("MRAs", root / "latam_mras.png", AppId::LATAM_MRAS);
     addEntry<LatamRadarApp>("Radar", root / "latam_radar.png", AppId::LATAM_RADAR);
     addEntry<LatamMessagesApp>("Messages", root / "latam_messages.png", AppId::LATAM_MESSAGES);
+    addEntry<LatamNavigraphApp>("Navigraph", root / "latam_navigraph.png", AppId::LATAM_NAVIGRAPH);
 
     addEntry<ChartsApp>("Charts", root / "folder.png", AppId::CHARTS);
     addEntry<AirportApp>("Airports", root / "if_xmag_3617.png", AppId::AIRPORTS);
     addEntry<RouteApp>("Routes", root / "if_applications-internet_118835.png", AppId::ROUTES);
     addEntry<MapApp>("Maps", root / "if_starthere_18227.png", AppId::MAPS);
     addEntry<PlaneManualApp>("Aircraft", root / "if_ilustracoes_04-11_1519786.png", AppId::MANUALS);
-    addEntry<NotesApp>("Notes", root / "if_txt2_3783.png", AppId::NOTES);
 
     if (api().getChartService()->getNavigraph()->isSupported() || api().getChartService()->getChartFox()->isSupported()) {
         addEntry<ProvidersApp>("Providers", root / "if_Airport_22906.png", AppId::PROVIDERS);
     }
-
-    addEntry<About>("About", root / "if_Help_1493288.png", AppId::ABOUT);
 
     updateLayout(cont->getWidth());
     updateBackground(cont->getWidth(), cont->getHeight());
@@ -74,6 +72,7 @@ bool isLatamApp(AppId id) {
     case AppId::LATAM_MRAS:
     case AppId::LATAM_RADAR:
     case AppId::LATAM_MESSAGES:
+    case AppId::LATAM_NAVIGRAPH:
         return true;
     default:
         return false;
@@ -90,7 +89,7 @@ void AppLauncher::updateLayout(int width) {
     layoutWidth = width;
 
     const int columns = 5;
-    const int tileWidth = 90;
+    const int tileWidth = 104;
     const int top = 18, rowGap = 14, groupGap = 18;
 
     int margin = std::max(40, width / 8);
@@ -229,7 +228,7 @@ void AppLauncher::addEntry(const std::string& name, const std::filesystem::path&
     img::Image iconImg;
     try {
         iconImg.loadImageFile(icon);
-        iconImg.scale(48, 48);
+        iconImg.scale(64, 64);
     } catch (const std::exception &e) {
         logger::warn("Couldn't load icon %s: %s", icon.string().c_str(), e.what());
     }
@@ -237,7 +236,7 @@ void AppLauncher::addEntry(const std::string& name, const std::filesystem::path&
     Entry entry;
     entry.id = id;
     entry.app = std::move(app);
-    entry.button = std::make_shared<Button>(getUIContainer(), std::move(iconImg), name, 90);
+    entry.button = std::make_shared<Button>(getUIContainer(), std::move(iconImg), name, 104);
     entries.push_back(entry);
 
     size_t index = entries.size() - 1;

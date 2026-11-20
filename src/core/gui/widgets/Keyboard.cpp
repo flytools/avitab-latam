@@ -95,6 +95,36 @@ bool Keyboard::forwardKey(lv_obj_t *keys) {
     return true;
 }
 
+bool Keyboard::forwardPhysicalKey(uint32_t c) {
+    if (!onKey) {
+        return false;
+    }
+    if (c == '\b') {
+        onKey("Backspace", true);
+    } else if (c == '\n') {
+        onKey("Enter", true);
+    } else if (c >= 32 && c != 127) {
+        std::string utf8;       // code point -> UTF-8
+        if (c < 0x80) {
+            utf8 += (char) c;
+        } else if (c < 0x800) {
+            utf8 += (char) (0xC0 | (c >> 6));
+            utf8 += (char) (0x80 | (c & 0x3F));
+        } else if (c < 0x10000) {
+            utf8 += (char) (0xE0 | (c >> 12));
+            utf8 += (char) (0x80 | ((c >> 6) & 0x3F));
+            utf8 += (char) (0x80 | (c & 0x3F));
+        } else {
+            utf8 += (char) (0xF0 | (c >> 18));
+            utf8 += (char) (0x80 | ((c >> 12) & 0x3F));
+            utf8 += (char) (0x80 | ((c >> 6) & 0x3F));
+            utf8 += (char) (0x80 | (c & 0x3F));
+        }
+        onKey(utf8, false);
+    }
+    return true;
+}
+
 void Keyboard::setOnCancel(Callback cb) {
     onCancel = cb;
 }

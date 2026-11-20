@@ -32,6 +32,9 @@ public:
 
     Keyboard(WidgetPtr parent, std::shared_ptr<TextArea> target);
     void setOnKey(KeyCallback cb);
+    // A key of the physical keyboard ('\b' = backspace, '\n' = enter, otherwise a Unicode code point).
+    // Returns true when it was passed to the key callback (so the target text area must be left alone).
+    bool forwardPhysicalKey(uint32_t c);
     void setTarget(std::shared_ptr<TextArea> target);
     void setOnCancel(Callback cb);
     void setOnOk(Callback cb);

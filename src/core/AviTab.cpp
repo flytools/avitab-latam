@@ -317,6 +317,8 @@ void AviTab::commandShowApp(const std::string &appName) {
         showApp(AppId::LATAM_RADAR);
     } else if (appName == "latam-messages") {
         showApp(AppId::LATAM_MESSAGES);
+    } else if (appName == "latam-navigraph") {
+        showApp(AppId::LATAM_NAVIGRAPH);
     } else if (appName == "providers") {
         showApp(AppId::PROVIDERS);
     } else if (appName == "about") {
