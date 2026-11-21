@@ -58,7 +58,7 @@ private:
     int bgWidth = 0, bgHeight = 0;
     void updateBackground(int width, int height);
 
-    // The icons are placed by hand: 5 per row, each row centred, side margins, and a line between the LatamAcars apps and the others.
+    // The icons are placed by hand: 6 per row for the LatamAcars apps and 7 for the others, each row centred, side margins, and a line between the two groups.
     std::shared_ptr<Container> divider;
     int layoutWidth = 0;
     void updateLayout(int width);

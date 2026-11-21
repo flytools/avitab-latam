@@ -202,6 +202,7 @@ std::string RESTClient::post(const std::string& url, const std::map<std::string,
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpStatus);
     std::string content = std::string((char *) downloadBuf.data(), downloadBuf.size());
     if (httpStatus != 200) {
+        logger::warn("POST '%s' failed with HTTP %ld: %s", url.c_str(), httpStatus, content.substr(0, 500).c_str());
         curl_easy_cleanup(curl);
         throw HTTPException(httpStatus);
     }

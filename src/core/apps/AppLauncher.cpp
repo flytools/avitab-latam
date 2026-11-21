@@ -57,11 +57,12 @@ AppLauncher::AppLauncher(FuncsPtr appFuncs):
     addEntry<RouteApp>("Routes", root / "if_applications-internet_118835.png", AppId::ROUTES);
     addEntry<MapApp>("Maps", root / "if_starthere_18227.png", AppId::MAPS);
     addEntry<PlaneManualApp>("Aircraft", root / "if_ilustracoes_04-11_1519786.png", AppId::MANUALS);
-    addEntry<About>("About", root / "if_Help_1493288.png", AppId::ABOUT);
 
     if (api().getChartService()->getNavigraph()->isSupported() || api().getChartService()->getChartFox()->isSupported()) {
-        addEntry<ProvidersApp>("Providers", root / "if_Airport_22906.png", AppId::PROVIDERS);
+        addEntry<ProvidersApp>("Providers", root / "latam_providers.png", AppId::PROVIDERS);
     }
+
+    addEntry<About>("About", root / "if_Help_1493288.png", AppId::ABOUT);
 
     updateLayout(cont->getWidth());
     updateBackground(cont->getWidth(), cont->getHeight());
@@ -89,15 +90,17 @@ bool isLatamApp(AppId id) {
 }
 }
 
-// Six icons per row, close together with room on both sides; a row with fewer icons is centred as a whole.
-// The LatamAcars apps come first, then a thin line, then the AviTab apps.
+// Close together with room on both sides; a row with fewer icons is centred as a whole.
+// The LatamAcars apps come first (six per row), then a thin line, then the AviTab apps (seven per row).
 void AppLauncher::updateLayout(int width) {
     if (width <= 0 || width == layoutWidth) {
         return;
     }
     layoutWidth = width;
 
-    const int columns = 6;
+    const int latamColumns = 6;
+    const int avitabColumns = 7;
+    const int columns = std::max(latamColumns, avitabColumns);    // the widest row decides the cell width
     const int tileWidth = 104;
     const int top = 18, rowGap = 14, groupGap = 18;
 
@@ -111,14 +114,15 @@ void AppLauncher::updateLayout(int width) {
 
     int y = top;
     auto placeGroup = [&] (bool latam) {
+        const size_t perRow = latam ? latamColumns : avitabColumns;
         std::vector<Entry *> group;
         for (auto &entry: entries) {
             if (isLatamApp(entry.id) == latam) {
                 group.push_back(&entry);
             }
         }
-        for (size_t first = 0; first < group.size(); first += columns) {
-            size_t count = std::min<size_t>(columns, group.size() - first);
+        for (size_t first = 0; first < group.size(); first += perRow) {
+            size_t count = std::min<size_t>(perRow, group.size() - first);
             int x0 = (width - (int) count * cellWidth) / 2;
             int rowHeight = 0;
             for (size_t i = 0; i < count; i++) {
